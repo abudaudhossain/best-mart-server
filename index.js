@@ -26,10 +26,14 @@ async function run() {
       const result = await productsCollection.find({}).toArray();
 
       res.send(result)
-    }
+    })
+    app.get("/products/:id", async (req, res) => {
+      const { id } = req.params;
+      const query = { _id: ObjectId(id) };
+      const result = await productsCollection.findOne(query);
 
-
-    )
+      res.send(result);
+    })
 
   } finally {
 
