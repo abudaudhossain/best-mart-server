@@ -20,17 +20,38 @@ async function run() {
     console.log("connection success...")
     const database = client.db("BestMart+");
     const productsCollection = database.collection('products');
-    // const bookingCollection = database.collection('')
+    const ordersCollection = database.collection('orders')
+
     //get all products api
     app.get("/products", async (req, res) => {
       const result = await productsCollection.find({}).toArray();
 
       res.send(result)
     })
-    app.get("/products/:id", async (req, res) => {
+
+    //get product by id
+    app.get("/product/:id", async (req, res) => {
       const { id } = req.params;
       const query = { _id: ObjectId(id) };
       const result = await productsCollection.findOne(query);
+
+      res.send(result);
+    })
+
+    // get products by category
+    app.get("/products/:category", async (req, res) =>{
+      const {category} = req.params;
+      console.log(req.params);
+      const query = {category: category};
+      const result = await productsCollection.find(query).toArray();
+
+      res.send(result)
+    })
+
+    // inset order information post api
+    app.post("/order", async (req, res) =>{
+      const orderInfo = req.body
+      const result = await ordersCollection.insertOne(orderInfo);
 
       res.send(result);
     })
