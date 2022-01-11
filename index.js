@@ -21,6 +21,7 @@ async function run() {
     const database = client.db("BestMart+");
     const productsCollection = database.collection('products');
     const ordersCollection = database.collection('orders')
+    const usersCollection = database.collection("users")
 
     //get all products api
     app.get("/products", async (req, res) => {
@@ -39,20 +40,37 @@ async function run() {
     })
 
     // get products by category
-    app.get("/products/:category", async (req, res) =>{
-      const {category} = req.params;
-      console.log(req.params);
-      const query = {category: category};
+    app.get("/products/:category", async (req, res) => {
+      const { category } = req.params;
+      const query = { category: category };
       const result = await productsCollection.find(query).toArray();
 
       res.send(result)
     })
 
     // inset order information post api
-    app.post("/order", async (req, res) =>{
+    app.post("/order", async (req, res) => {
       const orderInfo = req.body
       const result = await ordersCollection.insertOne(orderInfo);
 
+      res.send(result);
+    })
+
+    //Add new user api 
+    app.post("/addUser", async (req, res) => {
+      const userInfo = req.body;
+      const result = await usersCollection.insertOne(userInfo);
+
+      res.send(result);
+    })
+
+    // Get user by email
+    app.get("/user/:email", async(req, res)=>{
+      const {email} = req.params;
+      const query = {email: email};
+      console.log(query)
+      const result = await usersCollection.find(query).toArray();
+      
       res.send(result);
     })
 
